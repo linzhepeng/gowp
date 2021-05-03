@@ -27,53 +27,53 @@ func demoJob2(v ...interface{}) {
 	}
 }
 
-func BenchmarkGoroutineMutex(b *testing.B) {
-	for i := 0; i < runTimes; i++ {
-		wg.Add(1)
-		go demoJob()
-	}
-	wg.Wait()
-}
-
-func BenchmarkPoolMutex(b *testing.B) {
-	pool, err := NewPool(20)
-	if err != nil {
-		b.Error(err)
-	}
-
-	job := &Job{
-		Handler: demoJob,
-	}
-
-	for i := 0; i < runTimes; i++ {
-		wg.Add(1)
-		pool.Put(job)
-	}
-	wg.Wait()
-}
-
-//func BenchmarkGoroutineAtomic(b *testing.B) {
+//func BenchmarkGoroutineMutex(b *testing.B) {
 //	for i := 0; i < runTimes; i++ {
 //		wg.Add(1)
-//		go demoJob2()
+//		go demoJob()
 //	}
 //	wg.Wait()
 //}
 //
-//func BenchmarkPoolAtomic(b *testing.B) {
+//func BenchmarkPoolMutex(b *testing.B) {
 //	pool, err := NewPool(20)
 //	if err != nil {
 //		b.Error(err)
 //	}
 //
 //	job := &Job{
-//		Handler: demoJob2,
+//		Handler: demoJob,
 //	}
 //
 //	for i := 0; i < runTimes; i++ {
 //		wg.Add(1)
 //		pool.Put(job)
 //	}
-//
 //	wg.Wait()
 //}
+
+func BenchmarkGoroutineAtomic(b *testing.B) {
+	for i := 0; i < runTimes; i++ {
+		wg.Add(1)
+		go demoJob2()
+	}
+	wg.Wait()
+}
+
+func BenchmarkPoolAtomic(b *testing.B) {
+	pool, err := NewPool(20)
+	if err != nil {
+		b.Error(err)
+	}
+
+	job := &Job{
+		Handler: demoJob2,
+	}
+
+	for i := 0; i < runTimes; i++ {
+		wg.Add(1)
+		pool.Put(job)
+	}
+
+	wg.Wait()
+}
